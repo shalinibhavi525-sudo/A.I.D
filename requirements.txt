@@ -5,3 +5,4 @@ torch==2.1.0
 pillow==10.1.0
 googletrans==4.0.0rc1
 werkzeug==3.0.1
+gunicorn==21.2.0
