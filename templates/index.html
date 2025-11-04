@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project A.I.D. - Accessible Image Descriptions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌍 Project A.I.D.</h1>
+            <p class="tagline">Autonomous Image Description - Making images accessible in your language</p>
+        </header>
+        
+        <main>
+            <div class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📷</div>
+                    <p class="upload-text">Click or drag an image here</p>
+                    <p class="upload-subtext">Supports JPG, PNG, WebP (max 16MB)</p>
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                </div>
+            </div>
+            
+            <div id="previewContainer" class="preview-container" style="display: none;">
+                <img id="previewImg" class="preview-img" alt="Uploaded image preview">
+            </div>
+            
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Analyzing your image... This might take a moment! ✨</p>
+            </div>
+            
+            <div id="error" class="error" style="display: none;"></div>
+            
+            <div id="results" class="results" style="display: none;">
+                <div class="description-box">
+                    <h3>🇬🇧 English Description</h3>
+                    <p class="description-text" id="englishDesc"></p>
+                    <button class="audio-btn" onclick="speakText('en-US', document.getElementById('englishDesc').textContent)">
+                        🔊 Listen
+                    </button>
+                </div>
+                
+                <div class="description-box">
+                    <h3>🇮🇳 हिंदी विवरण (Hindi Description)</h3>
+                    <p class="description-text" id="hindiDesc"></p>
+                    <button class="audio-btn" onclick="speakText('hi-IN', document.getElementById('hindiDesc').textContent)">
+                        🔊 सुनें (Listen)
+                    </button>
+                </div>
+                
+                <div class="description-box">
+                    <h3>🇧🇩 বাংলা বর্ণনা (Bengali Description)</h3>
+                    <p class="description-text" id="bengaliDesc"></p>
+                    <button class="audio-btn" onclick="speakText('bn-IN', document.getElementById('bengaliDesc').textContent)">
+                        🔊 শুনুন (Listen)
+                    </button>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Built with ❤️ for accessibility | Making the web more inclusive, one image at a time</p>
+            <p class="footer-note">Hack This Fall 2025</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
