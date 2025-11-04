@@ -1,52 +1,49 @@
-from transformers import BlipProcessor, BlipForConditionalGeneration
+import requests
 from PIL import Image
-import torch
-
-print("Loading AI model... (this might take a minute the first time)")
-processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
-model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
-print("✅ Model loaded successfully!")
+import base64
+from io import BytesIO
 
 def generate_caption(image_path):
     """
-    Generate a caption for an image using the BLIP model.
-    
-    Args:
-        image_path: Path to the image file
-        
-    Returns:
-        str: Generated caption describing the image
+    Generate caption using Hugging Face API (no model download needed!)
     """
     try:
-        image = Image.open(image_path).convert('RGB')
-      
-        inputs = processor(image, return_tensors="pt")
-    
-        with torch.no_grad():
-            output = model.generate(**inputs, max_length=50)
-      
-        caption = processor.decode(output[0], skip_special_tokens=True)
+        # Read image and convert to base64
+        with Image.open(image_path) as img:
+            img = img.convert('RGB')
+            buffered = BytesIO()
+            img.save(buffered, format="JPEG")
+            img_str = base64.b64encode(buffered.getvalue()).decode()
         
-        caption = enhance_caption(caption)
+        # Call Hugging Face API (free!)
+        API_URL = "https://api-inference.huggingface.co/models/Salesforce/blip-image-captioning-base"
         
-        return caption
+        with open(image_path, "rb") as f:
+            data = f.read()
+        
+        response = requests.post(API_URL, data=data)
+        result = response.json()
+        
+        if isinstance(result, list) and len(result) > 0:
+            caption = result[0].get('generated_text', 'Unable to generate description.')
+        else:
+            caption = "Unable to generate description."
+        
+        return enhance_caption(caption)
     
     except Exception as e:
         print(f"Error generating caption: {str(e)}")
         return "Unable to generate description for this image."
 
 def enhance_caption(caption):
-    """
-    Make the caption more descriptive and natural.
-    This is a simple enhancement - you can make it more sophisticated!
-    """
     caption = caption.strip()
     if caption:
         caption = caption[0].upper() + caption[1:]
     
     if not caption.endswith('.'):
         caption += '.'
-  
-    descriptive_caption = f"This image shows {caption}"
     
-    return descriptive_caption
+    if not caption.lower().startswith('this'):
+        caption = f"This image shows {caption}"
+    
+    return caption
