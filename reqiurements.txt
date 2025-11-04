@@ -1,5 +1,1 @@
-transformers
-torch
-Pillow
-requests
-sentencepiece
+
